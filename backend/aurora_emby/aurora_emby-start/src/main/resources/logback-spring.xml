@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="server.port" source="server.port"/>
+    <springProperty scope="context" name="log.file.name.path" source="log.file.name.path"/>
+    <springProperty scope="context" name="log.errorfile.name.path" source="log.errorfile.name.path"/>
+    <springProperty scope="context" name="log.maxhistory" source="log.maxhistory"/>
+    <springProperty scope="context" name="log.maxFileSize" source="log.maxFileSize"/>
+    <springProperty scope="context" name="log.totalsizecap" source="log.totalsizecap"/>
+    <springProperty scope="context" name="log.out.encoder" source="log.out.encoder"/>
+
+    <appender name="APPENDER"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <fileNamePattern>${log.file.name.path}</fileNamePattern>
+            <!--文件最多保留的天数 -->
+            <maxHistory>${log.maxhistory}</maxHistory>
+            <!--文件最大为多少 -->
+            <maxFileSize>${log.maxFileSize}</maxFileSize>
+            <totalSizeCap>${log.totalsizecap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>${log.out.encoder}
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="ERRORAPPENDER"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <fileNamePattern>${log.errorfile.name.path}</fileNamePattern>
+            <!--文件最多保留的天数 -->
+            <maxHistory>${log.maxhistory}</maxHistory>
+            <!--文件最大为多少 -->
+            <maxFileSize>${log.maxFileSize}</maxFileSize>
+            <totalSizeCap>${log.totalsizecap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+    </appender>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!--设置日志打印级别-->
+    <logger name="com.aurora" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="APPENDER"/>
+        <appender-ref ref="ERRORAPPENDER"/>
+        <appender-ref ref="Console"/>
+    </logger>
+    <!--设置框架日志打印级别-->
+    <root>
+        <level value="INFO" />
+        <appender-ref ref="APPENDER" />
+        <appender-ref ref="ERRORAPPENDER"/>
+        <appender-ref ref="Console"/>
+    </root>
+
+</configuration>
